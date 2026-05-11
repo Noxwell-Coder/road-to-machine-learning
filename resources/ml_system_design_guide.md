@@ -1,9 +1,11 @@
 # ML System Design Comprehensive Guide
 
-Complete guide to designing scalable, production-ready machine learning systems.
+Complete guide to designing scalable, production-ready machine learning systems. You do **not** need to read front-to-back: jump by level, then return for detail.
 
 ## Table of Contents
 
+- [How to use this guide](#how-to-use-this-guide)
+- [Terms in plain English](#terms-in-plain-english)
 - [Introduction to ML System Design](#introduction-to-ml-system-design)
 - [Real-World Systems You Are Designing For](#real-world-systems-you-are-designing-for)
 - [End-to-End ML Lifecycle](#end-to-end-ml-lifecycle)
@@ -25,7 +27,48 @@ Complete guide to designing scalable, production-ready machine learning systems.
 
 ---
 
+## How to use this guide
+
+**Goal:** the same document should help a **first-time learner**, someone **building their first API**, and someone **preparing for senior interviews**—without hiding rigor.
+
+| You are… | Suggested path |
+|-----------|----------------|
+| **Beginner (new to ML in production)** | 1) [Terms in plain English](#terms-in-plain-english) → 2) [Introduction](#introduction-to-ml-system-design) → 3) [Real-world systems](#real-world-systems-you-are-designing-for) → 4) [Lifecycle](#end-to-end-ml-lifecycle). **Skip code on first read**; treat blocks as “things you will implement later.” |
+| **Intermediate (ML + coding, little ops)** | [Lifecycle](#end-to-end-ml-lifecycle) → [Train–serve skew](#training-vs-inference--trainserve-skew) → [Serving](#model-serving-architecture) → [Monitoring & drift](#monitoring--observability) → [Testing & rollouts](#testing--safe-rollouts). |
+| **Advanced / interviews** | Skim terms, then use the [Interview checklist](#interview--design-review-checklist) as a **spine** and drill sections where you are weakest. |
+
+**Symbols used in explanations**
+
+- **In plain English:** a one-sentence intuition before a denser idea.
+- **Why it matters:** ties the idea to outages, cost, or user trust.
+- Code blocks are **illustrations**—copy-paste only after adapting names, timeouts, and infra to your stack.
+
+---
+
+## Terms in plain English
+
+| Term | Simple meaning | Why teams say it |
+|------|----------------|------------------|
+| **Latency** | How long **one** user waits from “ask” to “answer.” | Users leave when the spinner never stops. |
+| **Throughput** | How many requests the system **finishes per second** (capacity). | Black Friday vs a quiet Tuesday differ here. |
+| **p95 / p99 latency** | “95% (or 99%) of requests were **faster than** this time.” | One slow user is noise; **p99** catches “bad tail” experiences. |
+| **Synchronous** | User waits on the line for the answer (web score, chat). | Needs predictable latency. |
+| **Asynchronous / batch** | Work is queued; answers come later (nightly reports). | Cheaper; higher latency OK. |
+| **Load balancer** | Distributes traffic across **copies** of the same service. | One machine should not be a single point of failure. |
+| **Stateless service** | Any replica can answer; no hidden memory on one box. | Easiest to scale horizontally. |
+| **Stateful service** | Remembers session/context (often in Redis or a DB). | Chat, multi-step flows; harder to scale. |
+| **Canary** | Send **a few %** of traffic to a new version first. | Limits blast radius of a bad deploy. |
+| **Shadow traffic** | New version gets a **copy** of requests; users still see old output. | Compare stability before trusting predictions. |
+| **RAG** | **Retrieve** snippets, then **generate** an answer grounded in them. | Reduces “made up” answers if retrieval is good. |
+| **Drift** | Live data / labels no longer match training reality. | Model accuracy decays even if code never changed. |
+| **Train–serve skew** | Training code path and serving code path **disagree** (subtle bugs). | Classic “great in Jupyter, bad in prod.” |
+| **NFR** | Non-functional requirements: speed, uptime, cost, privacy—not the math of the model. | What system design questions usually test. |
+
+---
+
 ## Introduction to ML System Design
+
+> **In plain English:** ML system design is about shipping **reliable software** around a model—not only picking an algorithm.
 
 ### What is ML System Design?
 
@@ -55,6 +98,8 @@ Complete guide to designing scalable, production-ready machine learning systems.
 
 ## Real-World Systems You Are Designing For
 
+> **In plain English:** different products stress **different bottlenecks**—latency, cost, accuracy, or compliance. The table below is a map of “what usually breaks.”
+
 These patterns show up in interviews and on the job. Each stresses different parts of the stack.
 
 | Scenario | What “good” looks like | Typical bottlenecks |
@@ -71,6 +116,8 @@ These patterns show up in interviews and on the job. Each stresses different par
 
 ## End-to-End ML Lifecycle
 
+> **In plain English:** a model is one box inside a **long assembly line** of data, training, release, and monitoring. If any stage is weak, users see failures even when the neural net is “state of the art.”
+
 Think in **pipelines**, not files: data moves through stages; each stage has inputs, outputs, owners, and failure behavior.
 
 ```
@@ -83,11 +130,13 @@ Business goal → Data sources → Ingestion & storage
 
 **Concrete example — “overnight risk refresh”:** A retail bank retrains a delinquency model weekly. Raw payments land in a **data lake**; **Spark** builds training rows; **MLflow** stores metrics and the `model.pkl` artifact; **Airflow** triggers training; on success, a new version is registered and **10% canary** traffic is switched before full promotion. If **population drift** spikes, an alert opens a ticket and traffic rolls back to `v3.2`.
 
-**Concrete example — “live product search”:** Queries hit an **API gateway** → **spell-check + language detect** → **retrieval** (BM25 + vector) → **reranker model** on top-50 candidates → JSON response in &lt;200 ms p95. Caches store hot queries; a **static fallback** returns popularity-sorted results if the ranker times out.
+**Concrete example — “live product search”:** Queries hit an **API gateway** → **spell-check + language detect** → **retrieval** (BM25 + vector) → **reranker model** on top-50 candidates → JSON response **under ~200 ms** for most requests (p95). Caches store hot queries; a **static fallback** returns popularity-sorted results if the ranker times out.
 
 ---
 
 ## Requirements, SLAs, and Capacity
+
+> **In plain English:** before you draw architecture diagrams, write down **how fast**, **how big**, and **how expensive** the system must be. Those numbers drive every later choice.
 
 Before drawing boxes, write down **non-functional requirements (NFRs)**:
 
@@ -112,6 +161,8 @@ This is not a substitute for load tests — it tells you whether your architectu
 ---
 
 ## Core Concepts
+
+> **In plain English:** this section is the **vocabulary** of system design—requests, latency, throughput. If words feel new, read slowly and match each idea to an app you use daily (maps, banking, streaming).
 
 ### Requests & Responses
 
@@ -244,6 +295,8 @@ model = DataParallel(model, device_ids=[0, 1, 2, 3])
 
 ## Training vs Inference & Train–Serve Skew
 
+> **In plain English:** **training** is “study for the exam for weeks”; **inference** is “answer one exam question in seconds.” **Skew** means you accidentally studied different material than what appears on the real test.
+
 **Training** optimizes parameters on historical data (often batch, high throughput, minutes to hours). **Inference** applies fixed parameters to live requests (often low latency, milliseconds unless batch scoring).
 
 **Train–serve skew** means “the model sees a different distribution or encoding at serve time than during training.” Classic causes:
@@ -302,11 +355,15 @@ class ChurnModelPackage:
 # Example: same class imported in training notebook and in FastAPI service
 ```
 
+**Beginner note:** you do not need every library on day one. Focus on the **idea**: one Python object owns both **“how to clean a row”** and **“how to predict”** so training and serving cannot silently diverge.
+
 **Feature store (idea):** offline jobs write **training snapshots**; online path reads **low-latency feature vectors** keyed by `user_id` or `session_id`. Stores like Feast, Tecton, or in-house Redis+SQL combinations exist to keep **one definition** of “7-day spend” for train and serve.
 
 ---
 
 ## Scalability Patterns
+
+> **In plain English:** when one computer is not enough, you either **make it bigger** (vertical) or **add more computers** (horizontal) and **spread work** (load balancing, queues, caches).
 
 ### Load Balancing
 
@@ -575,6 +632,8 @@ spec:
 
 ## Data Infrastructure
 
+> **In plain English:** models sit on top of **storage** (tables, blobs, vectors, time series). Pick storage the way you pick a backpack—by what you must carry and how often you open it.
+
 ### Databases
 
 **Database Types for ML:**
@@ -776,6 +835,8 @@ prediction = result.get(timeout=30)
 
 ## Model Serving Architecture
 
+> **In plain English:** **serving** is how the saved model becomes an **HTTP (or gRPC) service** that other systems call. Stateless is usually easier; stateful is for conversations and multi-step flows.
+
 ### Stateless Architecture
 
 **Stateless Design:**
@@ -898,6 +959,8 @@ class SessionManager:
 
 ## RAG & LLM-Oriented Serving
 
+> **In plain English:** instead of asking the LLM from memory alone, you **look up passages** from your docs first, then ask the model to stay faithful to those passages—like an open-book exam.
+
 **Retrieval-Augmented Generation (RAG)** answers user questions by **(1)** retrieving relevant chunks from your docs, **(2)** stuffing them into a prompt, **(3)** asking an LLM to answer **using only that context**. In production you are really designing **three systems**: ingestion/indexing, retrieval, and generation.
 
 **Real-life shape:** Internal IT bot at a 5k-person company. PDFs and Confluence pages change daily; users expect citations. Design choices:
@@ -951,6 +1014,8 @@ prompt = build_prompt(user_q, retrieve(user_q, INDEX))
 ---
 
 ## High Availability & Reliability
+
+> **In plain English:** **availability** means “still works when something breaks.” You add spare capacity, health checks, and circuit breakers so one bad dependency does not take down the whole product.
 
 ### High Availability
 
@@ -1035,6 +1100,8 @@ def predict_with_fallback(features):
 ```
 
 ### Monitoring & Observability
+
+> **In plain English:** **metrics** are numbers over time (how busy, how slow). **Logs** are lines of text when something happens. **Traces** follow one request across many services—like a parcel tracking number through warehouses.
 
 **Key Metrics to Monitor:**
 
@@ -1137,6 +1204,8 @@ async def predict(request: PredictionRequest):
 
 ### Data drift, labels, and data quality
 
+> **In plain English:** the world changes; your frozen model does not. **Drift** is the gap between “what the model expects” and “what users actually send today.”
+
 **Concept drift:** the world changed; the old decision boundary is wrong. **Covariate drift:** inputs shift but the conditional label distribution **P(y|x)** is still learnable with a new model. **Prior shift:** class balance changes.
 
 **Real-life:** After a holiday, e-commerce traffic spikes on gift categories. A conversion model trained on October data sees new category mix — **latency stays green** while **business metrics drop**. Fix: refresh training data, segment models by region, or add short-horizon **auto-retrain** with guardrails.
@@ -1154,6 +1223,8 @@ async def predict(request: PredictionRequest):
 ---
 
 ## Security, Privacy & Compliance
+
+> **In plain English:** a model endpoint is still a **public-facing program**. Bad inputs, stolen keys, or leaked logs hurt users and the business the same way they would for any other API.
 
 ML services are normal APIs: **validate inputs**, **authenticate callers**, **rate-limit**, and **audit** sensitive actions.
 
@@ -1186,6 +1257,8 @@ class ScoreRequest(BaseModel):
 
 ## Testing & Safe Rollouts
 
+> **In plain English:** never flip 100% of customers to a new model in one click unless you must. **Gradual** exposure (canary/shadow) is how teams learn safely on real traffic.
+
 **Champion / challenger:** production keeps **champion**; **challenger** receives a slice (e.g. 5%) for A/B comparison on business KPIs, not only accuracy.
 
 **Canary deploy:** route 1% → 10% → 100% while watching error rate and p99 latency; automatic rollback if SLO breached.
@@ -1209,6 +1282,8 @@ def choose_model_version(user_id: str) -> str:
 
 ## Interview & Design-Review Checklist
 
+> **In plain English:** interviews reward **structured thinking**, not buzzwords. Walk top-to-bottom: users → data → model → serving → reliability → observability → rollout → cost/legal.
+
 When someone says “design a recommendation system” or “fraud detection at scale,” walk through:
 
 1. **Users & goals:** Who calls the API? What decision happens with the score?
@@ -1227,6 +1302,8 @@ If you cover these ten buckets with **one concrete example each**, you usually d
 ---
 
 ## Best Practices
+
+> **In plain English:** start boring and reliable; add cleverness only where metrics prove you need it.
 
 ### Design Principles
 
