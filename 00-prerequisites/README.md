@@ -13,18 +13,22 @@ Welcome to the foundation phase! Before diving into machine learning, we need to
 ##  Modules
 
 ### 01-python-basics
-Learn Python from scratch - variables, data types, control flow, functions, and object-oriented programming basics.
+Learn Python from scratch—structured as **AI programming with Python**: core syntax, functional and object-oriented patterns, files, and exceptions before math-heavy ML topics.
 
 **Topics:**
-- Variables and Data Types
-- Control Flow (if/else, loops)
-- Functions
-- Lists, Dictionaries, Tuples
-- File I/O
-- Error Handling
-- Object-Oriented Programming Basics
-- Time Complexity and Algorithm Efficiency (Big O notation)
-- Iterators and Generators (Memory-efficient processing)
+- Variables, conditional statements, loops, lists, and dictionaries (overview)
+- Functions and functional programming
+- Introduction to OOP: classes and objects; class and object theory; class and object implementation
+- Iterators and generators (memory-efficient processing; connects to ML data pipelines); lambda functions; `map`, `filter`, and `reduce`
+- File handling: reading and writing files; read position (`tell`, `seek`)
+- Inheritance and polymorphism; encapsulation and abstraction
+- Practice problems based on file handling
+- Exceptions: `try` / `except` / `else` / `finally`
+- Tuples and other built-in types (as needed for data pipelines)
+- Time complexity and algorithm efficiency (Big O notation)
+
+**Capstone project:**
+- **Movie script generator** — apply files, strings, control flow, and optional OOP to build a small script-generation tool end to end. **Full runnable code** (CSV, `tell`/`seek`, `try`/`except`/`else`/`finally`) lives in [`01-python-basics.md` → Capstone: Movie script generator](01-python-basics.md#capstone-movie-script-generator).
 
 **Time Estimate:** 2-3 weeks
 
