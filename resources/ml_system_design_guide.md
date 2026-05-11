@@ -18,10 +18,10 @@ This guide is for anyone who wants machine learning to actually work in the real
 - [Model Serving Architecture](#model-serving-architecture)
 - [RAG and LLM oriented serving](#rag-and-llm-oriented-serving)
 - [High Availability & Reliability](#high-availability-reliability)
-- [Monitoring: Metrics, Logs & Traces](#monitoring--observability)
+- [Monitoring and observability](#monitoring-observability)
 - [Data Drift & Data Quality](#data-drift-labels-and-data-quality)
-- [Security, Privacy & Compliance](#security-privacy--compliance)
-- [Testing & Safe Rollouts](#testing--safe-rollouts)
+- [Security, Privacy & Compliance](#security-privacy-compliance)
+- [Testing & Safe Rollouts](#testing-safe-rollouts)
 - [Interview and design review checklist](#interview-and-design-review-checklist)
 - [Best Practices](#best-practices)
 - [Resources](#resources)
@@ -35,7 +35,7 @@ Same guide, three speeds: someone curious, someone wiring their first service, s
 | You are… | Suggested path |
 |-----------|----------------|
 | **New to production ML** | Start with [key terms](#key-terms-in-simple-words), then [introduction](#introduction-to-ml-system-design), [real world shapes](#real-world-systems-you-are-designing-for), and the [lifecycle](#end-to-end-ml-lifecycle). Read the [case study](#case-study-a-debit-card-risk-score) once like a short story. On the first pass you can skip code blocks entirely. |
-| **Comfortable with ML code, lighter on ops** | [Lifecycle](#end-to-end-ml-lifecycle) → [case study](#case-study-a-debit-card-risk-score) → [training versus serving](#why-training-and-serving-should-match) → [serving](#model-serving-architecture) → [monitoring](#monitoring--observability) → [testing and rollouts](#testing--safe-rollouts). |
+| **Comfortable with ML code, lighter on ops** | [Lifecycle](#end-to-end-ml-lifecycle) → [case study](#case-study-a-debit-card-risk-score) → [training versus serving](#why-training-and-serving-should-match) → [serving](#model-serving-architecture) → [monitoring](#monitoring-observability) → [testing and rollouts](#testing-safe-rollouts). |
 | **Interview mode** | Skim the glossary, read the case study, then walk the [interview checklist](#interview-and-design-review-checklist) out loud. Drill only the sections where your answers feel thin. |
 
 **How callouts work**

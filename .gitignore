@@ -32,6 +32,7 @@ env/
 ENV/
 ml-env/
 .venv
+.linkcheck-venv/
 env.bak/
 venv.bak/
 

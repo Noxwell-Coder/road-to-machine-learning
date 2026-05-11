@@ -115,7 +115,7 @@ After completing the basics:
 - Check the main [README.md](README.md)
 - Review module-specific READMEs
 - Open an issue on GitHub
-- Check [Resources](resources/) section
+- Check the [Resources](README.md#resources) section in the main README
 
 ##  Your First Milestone
 
