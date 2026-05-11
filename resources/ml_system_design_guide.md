@@ -63,6 +63,10 @@ Same guide, three speeds: someone curious, someone wiring their first service, s
 | **Drift** | Live data / labels no longer match training reality. | Model accuracy decays even if code never changed. |
 | **Train and serve skew** | Training code path and serving code path **disagree** (subtle bugs). | Classic “great in Jupyter, bad in prod.” |
 | **NFR** | Nonfunctional requirements: speed, uptime, cost, privacy, not the math of the model. | What system design questions usually test. |
+| **Cold start** | New user or item has **little or no history**, so features are thin. | Recsys and ads need explicit fallbacks, not only a big model. |
+| **Idempotency** | Repeating the same request with the same key does **not** double charge or double act. | Payments and writes that retry on timeouts stay safe. |
+| **Error budget** | Allowed **unreliability** per month tied to an SLO (for example 99.9% uptime). | Lets you choose when to ship fast versus freeze for stability. |
+| **Lineage** | **Traceable path** from raw data through transforms to a trained artifact and deploy. | Audits, rollbacks, and “which data trained this?” questions. |
 
 ---
 
@@ -87,6 +91,8 @@ You will hear five qualities repeated in rooms and docs:
 ML adds a few headaches on top of normal backend work. Inference can be expensive. Data volume is rarely cute. Models need refreshes without a two hour maintenance page that trends on Twitter. You constantly choose between answering now versus answering later in a batch. Everyone suddenly cares about **versioning** because “the model last Tuesday” is a real forensic object.
 
 Compared with a plain CRUD service, ML stacks also wrestle with big artifacts in memory, **tight coupling to historical data**, behavior that drifts even when code is frozen, and hardware appetites that change when someone swaps an architecture.
+
+**Interviews versus production.** In a timed discussion you will compress weeks of politics into minutes: still spell out **who consumes the output**, **what breaks user trust**, and **what you would measure first** if traffic doubled tonight. In production the same habits matter, except the whiteboard is Grafana and the clock is an incident channel.
 
 ---
 
@@ -125,6 +131,12 @@ Business goal → Data sources → Ingestion & storage
 **Example (overnight risk refresh):** A retail bank retrains a delinquency model weekly. Raw payments land in a **data lake**; **Spark** builds training rows; **MLflow** stores metrics and the `model.pkl` artifact; **Airflow** triggers training; on success, a new version is registered and **10% canary** traffic is switched before full promotion. If **population drift** spikes, an alert opens a ticket and traffic rolls back to `v3.2`.
 
 **Example (live product search):** Queries hit an **API gateway**, then **spell check** and **language detect**, then **retrieval** (BM25 and vector), then a **reranker model** on the top 50 candidates, then a JSON response **under ~200 ms** for most requests (p95). Caches store hot queries; a **static fallback** returns popularity sorted results if the ranker times out.
+
+### Model registry, lineage, and promotion gates
+
+A **registry** is not glamour; it is where teams agree what “the model” means: artifact URI, framework version, feature schema hash, evaluation snapshot, and approver. **Lineage** ties that bundle back to datasets and code commits so a rollback is not guesswork.
+
+Promotion should read like a release policy, not a vibe check: **who can move canary to 100%**, which **automated checks** must be green (latency SLO on shadow, calibration drift bounds, fairness slice tests if you promised them), and how long an **embargo** sits before marketing rewrites the FAQ. If you cannot answer “which artifact is in prod right now?” in one query, you are still in notebook territory.
 
 ---
 
@@ -167,6 +179,22 @@ Workers needed ≈ 2000 / 20 ≈ 100 workers
 Add **headroom** (+30 to 50%) for bursts and deploy failures. If each worker uses **2 GB RAM**, you need **~200 to 300 GB** total addressable memory across the fleet (before replicas for HA).
 
 This is not a substitute for load tests; it tells you whether your architecture is in the right **order of magnitude**.
+
+### Clarifying questions (what to pin down first)
+
+Before boxes and arrows, make the **problem statement** boringly precise. You are not being difficult; you are buying the design room later.
+
+| Theme | Examples of what to ask |
+|-------|-------------------------|
+| **Consumer** | Who calls this (mobile app, batch job, another service)? Sync or async? |
+| **Scale** | Orders of magnitude for RPS, daily rows, peak versus steady, multi region or not. |
+| **Latency budget** | Hard ceiling (card swipe) versus soft (dashboard refresh). Where is caching allowed? |
+| **Freshness** | How stale can features or an index be before the product lies to users? |
+| **Labels and risk** | How are labels produced, delayed, or noisy? Human review for high stakes? |
+| **Compliance** | PII, retention, export or delete, model explainability expectations. |
+| **Success** | Business metric first, model metric second, so you do not optimize the wrong score. |
+
+If the room cannot answer three of these, your first proposal should stay **small and observable**: one serving path, one way to replay traffic, one dashboard that proves the story.
 
 ---
 
@@ -882,6 +910,12 @@ async def predict(request: PredictionRequest):
     return {"prediction": float(prediction), "model_version": "1.4.2"}
 ```
 
+### Cascading models when latency or budget bites
+
+Not every request deserves the same price tag. A common production pattern is a **cascade**: a cheap gate (rules, tiny classifier, or shallow retrieval) decides whether to call a heavy model at all, or which size of model to use. Examples: skip the billion parameter reranker when the query is obviously navigational; route “suspicious” events only to a deep fraud net; answer from cache when embeddings for that document have not changed.
+
+State the tradeoff honestly: cascades reduce average cost and tail latency, but add **routing logic** you must monitor (false negatives on the gate hurt you silently). Log which stage served each request so you can tune thresholds with data instead of folklore.
+
 ### Stateful Architecture
 
 **Stateful Design:**
@@ -1230,6 +1264,8 @@ async def predict(request: PredictionRequest):
 | **Backtest** on replayed traffic | Rough impact of ranking changes |
 | **Shadow** deploy (challenger gets traffic copy, no user impact) | Live latency & distribution match lab? |
 
+**Offline metrics are a compass, not the destination.** Validation AUC can rise while revenue falls if labels lag, if the policy you evaluate differs from production routing, or if uplift is drowned out by inventory limits. Tie offline suites to **decision aware slices** (region, channel, cold users) and always leave budget to compare against **live business counters**, even if only on a small experiment slice.
+
 ---
 
 ## Security, Privacy & Compliance
@@ -1309,6 +1345,16 @@ When someone says “design a recommendation system” or “fraud detection at 
 
 If you cover these ten buckets with **one concrete example each**, you usually demonstrate senior level system thinking.
 
+### At the whiteboard: order and stopping criteria
+
+A workable rhythm is: **two minutes** of clarifying questions, **five to eight minutes** for a happy path diagram (data, train, serve, observe), **five minutes** on failure and cost, **two minutes** on how you would phase an MVP. Say explicitly what you are **deferring** (for example multi region active active on day one) and what would trigger revisiting it.
+
+Stop adding boxes when you can explain **how you would prove** the system healthy in the first week of traffic: three metrics, two alerts, one rollback lever. Interviewers remember coherence more than zoo architectures.
+
+### Failure modes worth naming out loud
+
+You do not need jargon; you need **stories**. Pick a few that fit the prompt: train and serve skew after a library upgrade; cache poisoning after a bad deploy; **thundering herd** when cold replicas spin up; embedding index stale while the UI promises “live”; GPU queue backlog when batch and online share a pool; silent label delay so training thinks yesterday’s outcomes are known today.
+
 ---
 
 ## Best Practices
@@ -1345,6 +1391,8 @@ If you cover these ten buckets with **one concrete example each**, you usually d
 
 ### Further Reading
 
+Structured ML system design (whether for interviews or architecture reviews) rewards the same muscle as classic distributed systems work: **tradeoffs, boundaries, and explicit failure handling**. Combine ML specific material with general backend and data engineering depth so latency, consistency, and cost arguments feel natural, not bolted on.
+
 - [Designing Machine Learning Systems](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/)
 - [Building Machine Learning Powered Applications](https://www.oreilly.com/library/view/building-machine-learning/9781492045106/)
 - [System Design Primer](https://github.com/donnemartin/system-design-primer)
@@ -1359,5 +1407,5 @@ If you cover these ten buckets with **one concrete example each**, you usually d
 
 ---
 
-**Remember**: System design is iterative. Start with a simple architecture, measure performance, identify bottlenecks, and optimize. Focus on the metrics that matter for your use case!
+**Remember**: System design is iterative. Start with a simple architecture, measure performance, identify bottlenecks, and optimize. Focus on the metrics that matter for your use case: the goal is a system people can **operate**, not a diagram that wins a single meeting.
 
