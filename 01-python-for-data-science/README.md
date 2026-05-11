@@ -1,12 +1,12 @@
 # Phase 1: Python for Data Science
 
-Master the essential Python libraries for data manipulation, analysis, and visualization.
+Master the essential Python libraries for data manipulation, analysis, and visualization—your **data processing & visualization (ML toolbox)** for everything that follows.
 
 ##  What You'll Learn
 
-- NumPy for numerical computing
-- Pandas for data manipulation
-- Matplotlib and Seaborn for data visualization
+- NumPy for numerical computing (`ndarray`, dtypes, broadcasting, linear algebra)
+- Pandas for data manipulation (Series, DataFrame, I/O, `groupby`, missing data, datetimes)
+- Matplotlib and Seaborn for data visualization (line, scatter, histogram, bar, pie, and beyond)
 - Plotly and Dash for interactive visualizations
 - Streamlit for building dashboards and ML applications
 - Flask for web applications and REST APIs
@@ -20,12 +20,13 @@ Master the essential Python libraries for data manipulation, analysis, and visua
 Learn NumPy - the foundation of numerical computing in Python.
 
 **Topics:**
-- Creating Arrays
-- Array Operations
-- Indexing and Slicing
-- Broadcasting
-- Mathematical Operations
-- Linear Algebra Operations
+- Fundamentals: `ndarray`, attributes, and data types
+- Array creation: from existing data, from scratch, ranges, and random values
+- Data access: indexing, slicing, views vs. copies, advanced iteration
+- Reshaping and array transformations
+- Arithmetic, mathematical, and logical operations
+- Broadcasting; sorting, searching, and counting
+- Statistical analysis and linear algebra basics
 
 **Time Estimate:** 1 week
 
@@ -35,13 +36,14 @@ Learn NumPy - the foundation of numerical computing in Python.
 Master Pandas - the most important library for data manipulation.
 
 **Topics:**
-- Series and DataFrames
-- Reading and Writing Data (CSV, Excel, JSON)
-- Data Selection and Filtering
-- Data Cleaning (Missing Values, Duplicates)
-- Grouping and Aggregation
-- Merging and Joining DataFrames
-- Time Series Operations
+- Series and DataFrame; file handling (CSV, Excel, JSON, and related formats)
+- Data access: indexing, `loc` / `iloc`, and filtering
+- Indexing, slicing, copying, and advanced iteration patterns
+- Modifying data: add/drop rows and columns, assign values
+- Handling duplicates, missing data, and datetime operations
+- Apply functions, aggregation, and `GroupBy` analysis
+- Merging and joining DataFrames
+- Time series operations
 
 **Time Estimate:** 2 weeks
 
@@ -51,8 +53,8 @@ Master Pandas - the most important library for data manipulation.
 Create beautiful and informative visualizations.
 
 **Topics:**
-- Matplotlib Basics (Line, Bar, Scatter, Histogram plots)
-- Seaborn Statistical Visualizations
+- Matplotlib: line, scatter, histogram, bar, and pie plots
+- Seaborn statistical visualizations
 - Plotly & Dash for Interactive Visualizations
 - Customizing Plots
 - Subplots and Multiple Plots
@@ -206,6 +208,7 @@ By the end of this phase, you should be able to:
 
 1. **Data Analysis Project**: Analyze a real dataset (e.g., sales data, weather data)
 2. **Visualization Project**: Create a dashboard with multiple visualizations
+3. **Build a machine learning model from scratch**: After NumPy and Pandas, combine skills in an end-to-end numeric pipeline—for example, follow the [Prerequisites Project Tutorial: Neural Network from Scratch](../00-prerequisites/prerequisites-project-tutorial.md) (NumPy only) and/or [First ML Project Tutorial](../02-introduction-to-ml/first-ml-project-tutorial.md) for a full sklearn-style workflow
 
 ##  Tips
 
