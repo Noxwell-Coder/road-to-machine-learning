@@ -192,6 +192,7 @@ This guide provides clear, role-specific learning paths for different careers in
 | Resource Type | Files |
 |--------------|-------|
 | **Core Skills** | [Data Science Cheatsheet](data_science_cheatsheet.md), [DSA for ML Guide](dsa_for_ml_guide.md), [Git Guide](git_guide.md) |
+| **System Design** | [System Design for Beginners](../system-design/README.md), [ML System Design Guide](ml_system_design_guide.md) |
 | **MLOps** | [MLFlow Guide](mlflow_comprehensive_guide.md), [Docker Tutorial](docker_tutorial.md), [ML Model Testing](ml_model_testing.md) |
 | **Tools** | [Data Validation Guide](data_validation.md), [AutoML Basics](automl_basics.md) |
 | **Career** | [Career & Portfolio Guide](career_portfolio.md), [Interview Prep](interview_prep.md) |
@@ -416,6 +417,7 @@ This guide provides clear, role-specific learning paths for different careers in
 | Resource Type | Files |
 |--------------|-------|
 | **Core Skills** | [Data Science Cheatsheet](data_science_cheatsheet.md), [Math Formulas](math_formulas.md) |
+| **System Design** | [System Design for Beginners](../system-design/README.md), [ML System Design Guide](ml_system_design_guide.md) |
 | **Tools** | [Docker Tutorial](docker_tutorial.md), [Git Guide](git_guide.md), [MLFlow Guide](mlflow_comprehensive_guide.md) |
 | **Career** | [Career & Portfolio Guide](career_portfolio.md), [Interview Prep](interview_prep.md) |
 
@@ -498,6 +500,7 @@ This guide provides clear, role-specific learning paths for different careers in
 | Resource Type | Files |
 |--------------|-------|
 | **Core Skills** | [Data Science Cheatsheet](data_science_cheatsheet.md), [DSA for ML Guide](dsa_for_ml_guide.md), [Math Formulas](math_formulas.md) |
+| **System Design** | [System Design for Beginners](../system-design/README.md), [ML System Design Guide](ml_system_design_guide.md) |
 | **Specialized** | [Transformer Fine-Tuning Guide](transformer_fine_tuning_guide.md), [Langchain Guide](langchain_guide.md), [LlamaIndex Guide](llamaindex_guide.md), [AI Agents Guide](ai_agents_guide.md) |
 | **MLOps** | [MLFlow Guide](mlflow_comprehensive_guide.md), [Docker Tutorial](docker_tutorial.md), [ML Model Testing](ml_model_testing.md) |
 | **Career** | [Career & Portfolio Guide](career_portfolio.md), [Interview Prep](interview_prep.md) |
@@ -561,6 +564,7 @@ This guide provides clear, role-specific learning paths for different careers in
 | Resource Type | Files |
 |--------------|-------|
 | **Core Skills** | [Data Science Cheatsheet](data_science_cheatsheet.md), [Git Guide](git_guide.md), [DSA for ML Guide](dsa_for_ml_guide.md) |
+| **System Design** | [System Design for Beginners](../system-design/README.md), [ML System Design Guide](ml_system_design_guide.md) |
 | **Tools** | [Docker Tutorial](docker_tutorial.md), [Data Validation Guide](data_validation.md), [Web Scraping Guide](web_scraping_guide.md) |
 | **Career** | [Career & Portfolio Guide](career_portfolio.md), [Interview Prep](interview_prep.md) |
 
@@ -626,6 +630,7 @@ This guide provides clear, role-specific learning paths for different careers in
 | Resource Type | Files |
 |--------------|-------|
 | **Core Skills** | [MLFlow Guide](mlflow_comprehensive_guide.md), [Docker Tutorial](docker_tutorial.md), [ML Model Testing](ml_model_testing.md) |
+| **System Design** | [System Design for Beginners](../system-design/README.md), [ML System Design Guide](ml_system_design_guide.md) |
 | **Tools** | [Data Validation Guide](data_validation.md), [Git Guide](git_guide.md) |
 | **Career** | [Career & Portfolio Guide](career_portfolio.md), [Interview Prep](interview_prep.md) |
 

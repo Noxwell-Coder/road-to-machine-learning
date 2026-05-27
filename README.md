@@ -13,7 +13,7 @@
 
 *Perfect for beginners • 26 Learning Modules • 23 Real-World Projects • Production-Ready Skills*
 
-[Get Started](#getting-started) • [Learning Path](#learning-path) • [Projects](#phase-9-projects) • [Full-stack AI](resources/career_roadmap_guide.md#full-stack-ai-engineer) • [Contribute](#contributing)
+[Get Started](#getting-started) • [Learning Path](#learning-path) • [Projects](#phase-9-projects) • [System Design](system-design/README.md) • [Full-stack AI](resources/career_roadmap_guide.md#full-stack-ai-engineer) • [Contribute](#contributing)
 
 </div>
 
@@ -57,7 +57,7 @@
 | **BI Analyst** | Business Intelligence | 10-15 months | 00-01, 19-21 | [View Guide →](resources/career_roadmap_guide.md#business-intelligence-analyst) |
 | **Full-Stack AI Engineer** | End-to-end AI products | 12-24 months (15-25 hrs/week, parallel with blueprint) | 00-01, 19, 25 + [In-repo lessons](resources/full_stack_track/README.md) + [Blueprint A–H](resources/full_stack_ai_engineer_roadmap.md#phase-a-typescript-foundations) | [View Guide →](resources/career_roadmap_guide.md#full-stack-ai-engineer) |
 
-**Foundational side track:** [System Design for Beginners](system-design/README.md) — 31 lessons (22 foundations + 9 interview-style designs) (HTTP, TCP, DNS, caching, load balancing, CAP, sharding, message queues). Useful for ML Engineer, MLOps, Data Engineer, AI Engineer, and Full-Stack AI Engineer paths. Pairs with the [ML System Design Guide](resources/ml_system_design_guide.md), which applies these foundations to ML services.
+**Foundational side track:** [System Design for Beginners](system-design/README.md) — 31 lessons covering HTTP, TCP, DNS, caching, load balancing, CAP, sharding, and message queues, plus a capstone and 9 interview-style design problems (rate limiter, social feed, chat, video, file storage, maps, KV store, message queue, and a real-time ML feature store). Useful for ML Engineer, MLOps, Data Engineer, AI Engineer, and Full-Stack AI Engineer paths. Pairs with the [ML System Design Guide](resources/ml_system_design_guide.md), which applies these foundations to ML services.
 
 **Time assumptions:** Ranges in the **Est. Time** column assume about **10–15 hours/week** for a steady part-time pace and **30–40 hours/week** for an intensive full-time pace, unless a row states otherwise (for example, Full-Stack AI Engineer calls out parallel blueprint hours).
 
