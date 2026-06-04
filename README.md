@@ -1,9 +1,9 @@
 # Road to ML: From Zero to Hero
 
 <div align="center">
-
-[![GitHub stars](https://img.shields.io/github/stars/NabidAlam/road-to-machine-learning?style=social)](https://github.com/NabidAlam/road-to-machine-learning/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/NabidAlam/road-to-machine-learning?style=social)](https://github.com/NabidAlam/road-to-machine-learning/network/members)
+<img src="https://img.shields.io/github/stars/NabidAlam/road-to-machine-learning?style=social" alt="GitHub stars">
+<img src="https://img.shields.io/github/forks/NabidAlam/road-to-machine-learning?style=social" alt="GitHub forks">
+![GitHub License](https://img.shields.io/github/license/NabidAlam/road-to-machine-learning)
 [![GitHub issues](https://img.shields.io/github/issues/NabidAlam/road-to-machine-learning)](https://github.com/NabidAlam/road-to-machine-learning/issues)
 [![GitHub license](https://img.shields.io/github/license/NabidAlam/road-to-machine-learning)](https://github.com/NabidAlam/road-to-machine-learning/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
